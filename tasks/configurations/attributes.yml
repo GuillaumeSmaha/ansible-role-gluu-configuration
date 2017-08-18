@@ -1,0 +1,33 @@
+
+- name: Update Attributes - Set default attributes
+  set_fact:
+    gluu_attributes_default:
+      objectClass:
+        - top
+        - gluuAttribute
+      description:
+
+- name: "Update Attributes - Attributes With Inum"
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    dn: "{{ item.inum | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0005', dn='attributes') }}"
+    attributes:
+      "{{ gluu_attributes_default | combine(item, recursive=True) | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0005') }}"
+  with_items:
+    "{{ gluu_attributes | default([]) }}"
+  when: item.inum is defined
+  loop_control:
+    label: "{{ item.displayName }}"
+
+- name: "Update Attributes - Attributes Without Inum"
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    search_filter: "(&(objectClass=gluuAttribute)(gluuAttributeName={{ item.gluuAttributeName }}))"
+    attributes:
+      "{{ gluu_attributes_default | combine(item, recursive=True) }}"
+  with_items:
+    "{{ gluu_attributes | default([]) }}"
+  when: item.inum is not defined
+  loop_control:
+    label: "{{ item.displayName }}"
+

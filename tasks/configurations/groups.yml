@@ -1,0 +1,32 @@
+
+- name: Update Groups - Set default attributes
+  set_fact:
+    gluu_groups_default:
+      objectClass:
+        - top
+        - gluuGroup
+
+- name: Update Groups - Group With Inum
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    dn: "{{ item.inum | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0003', dn='groups') }}"
+    attributes:
+      "{{ gluu_groups_default | combine(item, recursive=True) | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0003') | gluu_concat_inum(key='member', base_inum=gluu_inum_org, inum_type='0000', dn='people') }}"
+  with_items:
+    "{{ gluu_groups | default([]) }}"
+  when: item.inum is defined
+  loop_control:
+    label: "{{ item.displayName }}"
+
+- name: Update Groups - Group Without Inum
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    search_filter: "(&(objectClass=gluuGroup)(displayName={{ item.displayName }}))"
+    attributes:
+      "{{ gluu_groups_default | combine(item, recursive=True) | gluu_concat_inum(key='member', base_inum=gluu_inum_org, inum_type='0000', dn='people') }}"
+  with_items:
+    "{{ gluu_groups | default([]) }}"
+  when: item.inum is not defined
+  loop_control:
+    label: "{{ item.displayName }}"
+

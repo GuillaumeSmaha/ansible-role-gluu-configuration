@@ -1,0 +1,34 @@
+
+- name: Update Scripts - Set default attributes
+  set_fact:
+    gluu_scripts_default:
+      objectClass:
+        - top
+        - oxCustomScript
+      description:
+      oxRevision: 1
+
+- name: "Update Scripts - Scripts With Inum"
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    dn: "{{ item.inum | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0011', dn='scripts') }}"
+    attributes:
+      "{{ gluu_scripts_default | combine(item, recursive=True) | gluu_concat_inum(base_inum=gluu_inum_org, inum_type='0011') }}"
+  with_items:
+    "{{ gluu_scripts | default([]) }}"
+  when: item.inum is defined
+  loop_control:
+    label: "{{ item.displayName }} - {{ item.description }}"
+
+- name: "Update Scripts - Scripts Without Inum"
+  ldap_upsert:
+    params: "{{ ldap_params }}"
+    search_filter: "(&(objectClass=oxCustomScript)(displayName={{ item.displayName }}))"
+    attributes:
+      "{{ gluu_scripts_default | combine(item, recursive=True) }}"
+  with_items:
+    "{{ gluu_scripts | default([]) }}"
+  when: item.inum is not defined
+  loop_control:
+    label: "{{ item.displayName }} - {{ item.description }}"
+

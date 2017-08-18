@@ -1,0 +1,27 @@
+---
+
+- include: gluu-get-configuration.yml
+
+- include: configurations/appliances.yml
+
+- include: configurations/scripts.yml
+
+- include: configurations/oxtrust.yml
+
+- include: configurations/oxauth.yml
+
+- include: configurations/attributes.yml
+
+- include: configurations/open-id-connect-scopes.yml
+
+- include: configurations/open-id-connect-clients.yml
+
+- include: configurations/groups.yml
+
+- include: configurations/users.yml
+
+- include: "configurations/cluster/main.yml"
+  when: gluu_cluster == true
+
+- debug:
+    msg: "Administrator Password for Gluu GUI: {{ gluu_ldap_admin_password }}"

@@ -1,0 +1,3 @@
+---
+- name: restart gluu
+  command: gluu-serverd-{{ gluu_version }} restart

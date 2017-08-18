@@ -1,0 +1,35 @@
+
+
+- name: Gluu - Get LDAP Admin password
+  command: 'grep -oP "ldapPass=\K(.+)" /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties.last'
+  register: gluu_ldap_admin_password
+
+- name: Gluu - Get LDAP Salt password
+  command: 'grep -oP "encodeSalt = \K(.+)" /opt/gluu-server-{{ gluu_version }}/etc/gluu/conf/salt'
+  register: gluu_ldap_salt_password
+
+- name: Gluu - Get JDK Path
+  command: 'grep -oP "jreDestinationPath=\K(.+)" /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties.last'
+  register: gluu_jdk_path
+
+- name: Gluu - Get Inum Organization
+  command: 'grep -oP "inumOrg=\K.+" /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties.last'
+  register: gluu_inum_org
+
+- name: Gluu - Get Inum Appliance
+  command: 'grep -oP "inumAppliance=\K.+" /opt/gluu-server-{{ gluu_version }}/install/community-edition-setup/setup.properties.last'
+  register: gluu_inum_appliance
+
+- name: Gluu - Set Global Parameter
+  set_fact:
+    gluu_ldap_admin_password: "{{ gluu_ldap_admin_password.stdout }}"
+    gluu_ldap_salt_password: "{{ gluu_ldap_salt_password.stdout }}"
+    gluu_jdk_path: "/opt/gluu-server-{{ gluu_version }}{{ gluu_jdk_path.stdout }}"
+    gluu_inum_org: "{{ gluu_inum_org.stdout }}"
+    gluu_inum_appliance: "{{ gluu_inum_appliance.stdout }}"
+    ldap_params:
+      server_uri: "ldaps://localhost:1636"
+      bind_dn: "cn=directory manager,o=gluu"
+      bind_pw: "{{ gluu_ldap_admin_password.stdout }}"
+      validate_certs: False
+      base_scope: "o=gluu"
