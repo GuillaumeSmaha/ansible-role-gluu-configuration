@@ -33,10 +33,10 @@ EXAMPLES = '''
 
   tasks:
     - name: Encrypt password on user
-      {{ user | gluu_encrypt_password(
+      {{ user | gluu_ssha_user_password(
           key='password') }}
     - name: Encrypt password
-      {{ password | gluu_encrypt_password(
+      {{ password | gluu_ssha_user_password(
           key='key_to_crypt') }}
 '''
 
@@ -67,7 +67,7 @@ class FilterModule(object):
             if ignore_notfound:
                 return content
             raise errors.AnsibleFilterError(
-                '[gluu_encrypt_password] key is required for an input dict.')
+                '[gluu_ssha_user_password] key is required for an input dict.')
 
         content[key] = self.encrypt(content[key])
 
