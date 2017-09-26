@@ -46,6 +46,7 @@ EXAMPLES = '''
 
 from ansible import errors
 from ansible.module_utils.basic import *
+from ansible.module_utils.six import string_types
 import base64
 from pyDes import *
 
@@ -64,7 +65,7 @@ class FilterModule(object):
 
         if isinstance(content, dict):
             return self.gluu_encrypt_password_dict(content, key, secret, ignore_notfound)
-        elif isinstance(content, str):
+        elif isinstance(content, string_types):
             return self.gluu_encrypt_password_str(content, secret)
 
         return content

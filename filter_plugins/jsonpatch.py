@@ -57,6 +57,7 @@ EXAMPLES = '''
 
 from ansible import errors
 from ansible.module_utils.basic import *
+from ansible.module_utils.six import string_types
 import json
 from collections import OrderedDict
 
@@ -80,7 +81,7 @@ class FilterModule(object):
             raise errors.AnsibleFilterError(
                 '[jsonpatch] The python module dpath is required.')
 
-        if isinstance(content, str):
+        if isinstance(content, string_types):
             content = json.loads(content, encoding='utf-8-sig',
                                  object_pairs_hook=OrderedDict)
 

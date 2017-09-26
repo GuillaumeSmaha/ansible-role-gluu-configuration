@@ -83,6 +83,7 @@ gluu_object:
 
 from ansible import errors
 from ansible.module_utils.basic import *
+from ansible.module_utils.six import string_types
 
 
 class FilterModule(object):
@@ -113,7 +114,7 @@ class FilterModule(object):
         elif isinstance(content, list):
             return self.gluu_concat_inum_list(content, base_inum, inum_type, dn)
 
-        elif isinstance(content, str):
+        elif isinstance(content, string_types):
             return self.render(base_inum, inum_type, content, dn)
 
         return content
