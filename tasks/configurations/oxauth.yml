@@ -12,7 +12,7 @@
     params: "{{ ldap_params }}"
     dn: ou=oxauth,ou=configuration,inum={{ gluu_inum_appliance }},ou=appliances,o=gluu
     name: "{{ item.key }}"
-    values: "{{ gluu_oxauth_ldap_entry.results[1][item.key][0] | jsonpatch(operations=item.value) | to_json }}"
+    values: "{{ gluu_oxauth_ldap_entry.results[1][item.key][0] | jsonpatch(operations=item.value, to_json=True) }}"
     state: exact
   with_dict:
     "{{ gluu_oxauth_json_operations | default({}) }}"

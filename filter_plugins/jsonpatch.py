@@ -52,14 +52,14 @@ EXAMPLES = '''
 
     - name: Print JSON updated
       debug:
-        msg: "{{'test'| jsonpatch(ops=operations) | to_json}}"
+        msg: "{{'test'| jsonpatch(ops=operations, to_json=True)}}"
 '''
 
 from ansible import errors
 from ansible.module_utils.basic import *
-from ansible.module_utils.six import string_types
 import json
 from collections import OrderedDict
+from ansible.module_utils.six import string_types
 
 try:
     import dpath.util
@@ -75,7 +75,7 @@ class FilterModule(object):
             'jsonpatch': self.jsonpatch
         }
 
-    def jsonpatch(self, content, operations=None, *args, **kw):
+    def jsonpatch(self, content, operations=None, to_json=False, *args, **kw):
 
         if not dpath_found:
             raise errors.AnsibleFilterError(
@@ -98,6 +98,10 @@ class FilterModule(object):
 
         for operation in operations:
             content = self.apply_operation(operation, content)
+
+        if to_json:
+            # Avoid whitespace to avoid implicit conversion to dict by python
+            content = " " + json.dumps(content)
 
         return content
 
