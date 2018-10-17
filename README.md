@@ -84,7 +84,7 @@ vars:
 
   # Define a custom version of the package to install.
   # To get a list of available package versions visit: https://gluu.org/docs/ce/
-  gluu_version: 3.0.2
+  gluu_version: 3.1.4
 
 
   # Global parameters:
@@ -97,7 +97,7 @@ vars:
   #   - **oxTrustCacheRefreshServerIpAddress**: IP address of the recipient server for the cache refresh
   #   - **oxAuthenticationMode**: Authentication mode for the common authentication (default: auth_ldap_server)
   #   - **oxTrustAuthenticationMode**: Authentication mode for the oxTurst GUI authentication (default: auth_ldap_server)
-  # *See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/appliance.ldif*
+  # *See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/appliance.ldif*
   # Example to enable SCIM and set a custom script for authenticatio:
   # gluu_appliances:
   #   gluuScimEnabled: 'enabled'
@@ -114,12 +114,12 @@ vars:
   # - insertOrReplace: Insert or update a key.
   #
   # List of the attributes and keys (not complete):
-  # - oxTrustConfApplication *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/oxtrust-config.json)*
+  # - oxTrustConfApplication *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/oxtrust-config.json)*
   #   - oxAuthIssuer
   #   - umaIssuer
   #   - clientWhiteList
   #   - clientBlackList
-  # - oxTrustConfCacheRefresh *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/oxtrust-cache-refresh.json)*
+  # - oxTrustConfCacheRefresh *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/oxtrust-cache-refresh.json)*
   #   - sourceConfigs
   #   - inumConfig
   #   - targetConfig
@@ -133,7 +133,7 @@ vars:
   #   - attributeMapping
   #   - snapshotFolder
   #   - snapshotMaxCount
-  # - oxTrustConfImportPerson *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/oxtrust-import-person.json)*
+  # - oxTrustConfImportPerson *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/oxtrust-import-person.json)*
   #   - mappings
   #
   # Example to update ldap search size limit on the cache refrest configuration:
@@ -154,13 +154,13 @@ vars:
   # - insertOrReplace: Insert or update a key.
   #
   # List of the attributes and keys (not complete):
-  # - oxAuthConfDynamic *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/oxauth-config.json)*
+  # - oxAuthConfDynamic *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/oxauth-config.json)*
   #   - shortLivedAccessTokenLifetime
   #   - umaIssuer
   #   - clientWhiteList
   #   - clientBlackList
-  # - oxAuthConfStatic *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/oxauth-static-conf.json)*
-  # - oxAuthConfErrors *(See https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/static/oxauth/oxauth-errors.json)*
+  # - oxAuthConfStatic *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/oxauth-static-conf.json)*
+  # - oxAuthConfErrors *(See https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/static/oxauth/oxauth-errors.json)*
   # - oxAuthConfWebKeys
   #
   # Example to update id token lifetimen:
@@ -213,7 +213,7 @@ vars:
   #
   # If `inum` is not set, the attribute `displayName` will be used to search and update an existing entry.
   # _Note:_ The `inum` only need the value part of the inum value. The inum organization and type will be automaticly added.
-  # _Note 2:_ The list of inum for `oxAuthClaim` is available here: https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/attributes.ldif
+  # _Note 2:_ The list of inum for `oxAuthClaim` is available here: https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/attributes.ldif
   gluu_openid_connect_scopes:
 
 
@@ -247,7 +247,7 @@ vars:
   #
   # If `inum` is not set, the attribute `displayName` will be used to search and update an existing entry.
   # _Note:_ The `inum` only need the value part of the inum value. The inum organization and type will be automaticly added.
-  # _Note 2:_ The list of inum for `oxAuthScope` is available here: https://github.com/GluuFederation/community-edition-setup/blob/version_3.0.2.1/templates/scopes.ldif
+  # _Note 2:_ The list of inum for `oxAuthScope` is available here: https://github.com/GluuFederation/community-edition-setup/blob/3.1.4/templates/scopes.ldif
   gluu_openid_connect_clients:
 
 
