@@ -74,8 +74,8 @@ class PersonAuthentication(PersonAuthenticationType):
 
             destoryResult = ldapEntryManager.destroy()
             result = result and destoryResult
-            print("Basic (multi auth conf & lock account). Destroyed: "
-                  + ldapConfiguration.getConfigId() + ". Result: " + str(destoryResult))
+            print("Basic (multi auth conf & lock account). Destroyed: " +
+                  ldapConfiguration.getConfigId() + ". Result: " + str(destoryResult))
 
         print("Basic (multi auth conf & lock account). Destroyed successfully")
 
@@ -110,7 +110,7 @@ class PersonAuthentication(PersonAuthenticationType):
             keyValue = keyValue.strip()
 
             user_status = self.getUserAttributeValue(keyValue, "gluuStatus")
-            if user_status != None and user_status != "active":
+            if user_status is not None and user_status != "active":
                 print("Basic (multi auth conf & lock account). Account locked for user '%s'" % keyValue)
                 faces_messages = FacesMessages.instance()
                 faces_messages.clear()
@@ -133,8 +133,8 @@ class PersonAuthentication(PersonAuthenticationType):
                     loginAttributes = ldapExtendedEntryManager["loginAttributes"]
                     localLoginAttributes = ldapExtendedEntryManager["localLoginAttributes"]
 
-                    print("Basic (multi auth conf & lock account). Authenticate for step 1. Using configuration: "
-                          + ldapConfiguration.getConfigId())
+                    print("Basic (multi auth conf & lock account). Authenticate for step 1. Using configuration: " +
+                          ldapConfiguration.getConfigId())
 
                     idx = 0
                     count = len(loginAttributes)
@@ -213,8 +213,12 @@ class PersonAuthentication(PersonAuthenticationType):
             print("Basic (multi auth conf & lock account). Validate auth configuration. There is no ldap_configuration section in configuration")  # noqa
             return False
 
-        # @JsonPropertyOrder({ "configId", "bindDN", "bindPassword", "servers", "maxConnections", "useSSL", "baseDNs", "primaryKey",
-        #        "localPrimaryKey", "useAnonymousBind" })
+        # @JsonPropertyOrder({
+        #     "configId", "bindDN", "bindPassword", "servers",
+        #     "maxConnections", "useSSL", "baseDNs", "primaryKey",
+        #     "localPrimaryKey", "useAnonymousBind"
+        # })
+
         idx = 1
         for ldapConfiguration in authConfiguration["ldap_configuration"]:
             if (not self.containsAttributeString(ldapConfiguration, "configId")):
