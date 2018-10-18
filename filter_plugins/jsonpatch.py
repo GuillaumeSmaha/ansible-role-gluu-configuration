@@ -56,7 +56,6 @@ EXAMPLES = '''
 '''
 
 from ansible import errors
-from ansible.module_utils.basic import *
 import json
 from collections import OrderedDict
 from ansible.module_utils.six import string_types

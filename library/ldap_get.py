@@ -84,7 +84,6 @@ options:
     description:
       - Define if the first is only returned.
         It is set to true when dn is defined
-        
 """
 
 
@@ -253,7 +252,7 @@ def main():
         else:
             module.fail_json(
                 msg="No entry found for this search_filter %s" % module.params['search_filter'],
-                base_scope=module.params['base_scope'],  search_filter=module.params['search_filter'])
+                base_scope=module.params['base_scope'], search_filter=module.params['search_filter'])
 
     if module.params['first_only'] == 'yes':
         entries = entries[0]

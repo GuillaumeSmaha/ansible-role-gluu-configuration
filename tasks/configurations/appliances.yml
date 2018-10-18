@@ -1,6 +1,3 @@
-
-
-
 - name: Update Global Configuration
   ldap_attr_custom:
     params: "{{ ldap_params }}"
@@ -11,13 +8,11 @@
   with_dict:
     "{{ gluu_appliances | default({}) }}"
 
-
 - name: Update Global Configuration - Get current configuration
   ldap_get:
     params: "{{ ldap_params }}"
     dn: "inum={{ gluu_inum_appliance }},ou=appliances,o=gluu"
   register: gluu_appliances_ldap_entry
-
 
 - name: Update Global Configuration - Update configuration
   ldap_attr_custom:

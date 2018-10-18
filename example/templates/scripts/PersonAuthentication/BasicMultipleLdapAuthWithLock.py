@@ -6,12 +6,11 @@ from org.jboss.seam.security import Identity
 from org.xdi.model.custom.script.type.auth import PersonAuthenticationType
 from org.xdi.oxauth.service import UserService, AuthenticationService, AppInitializer
 from org.xdi.util import StringHelper
-from org.xdi.util import ArrayHelper
 from org.xdi.model.ldap import GluuLdapConfiguration
 from java.util import Arrays
 
-import java
-
+# from org.xdi.util import ArrayHelper
+# import java
 
 try:
     import json
@@ -24,10 +23,10 @@ class PersonAuthentication(PersonAuthenticationType):
         self.currentTimeMillis = currentTimeMillis
 
     def init(self, configurationAttributes):
-        print "Basic (multi auth conf & lock account). Initialization"
+        print("Basic (multi auth conf & lock account). Initialization")
 
         if (not configurationAttributes.containsKey("auth_configuration_file")):
-            print "Basic (multi auth conf & lock account). The property auth_configuration_file is empty"
+            print("Basic (multi auth conf & lock account). The property auth_configuration_file is empty")
             return False
 
         self.invalidLoginCountAttribute = "oxCountInvalidLogin"
@@ -35,20 +34,20 @@ class PersonAuthentication(PersonAuthenticationType):
             self.invalidLoginCountAttribute = configurationAttributes.get(
                 "invalid_login_count_attribute").getValue2()
         else:
-            print "Basic (multi auth conf & lock account). Initialization. Using default attribute"
+            print("Basic (multi auth conf & lock account). Initialization. Using default attribute")
 
         self.maximumInvalidLoginAttemps = 3
         if configurationAttributes.containsKey("maximum_invalid_login_attemps"):
             self.maximumInvalidLoginAttemps = StringHelper.toInteger(
                 configurationAttributes.get("maximum_invalid_login_attemps").getValue2())
         else:
-            print "Basic (multi auth conf & lock account). Initialization. Using default number attempts"
+            print("Basic (multi auth conf & lock account). Initialization. Using default number attempts")
 
         authConfigurationFile = configurationAttributes.get(
             "auth_configuration_file").getValue2()
         authConfiguration = self.loadAuthConfiguration(authConfigurationFile)
-        if (authConfiguration == None):
-            print "Basic (multi auth conf & lock account). File with authentication configuration should be not empty"
+        if authConfiguration is None:
+            print("Basic (multi auth conf & lock account). File with authentication configuration should be not empty")
             return False
 
         validationResult = self.validateAuthConfiguration(authConfiguration)
@@ -57,16 +56,16 @@ class PersonAuthentication(PersonAuthenticationType):
 
         ldapExtendedEntryManagers = self.createLdapExtendedEntryManagers(
             authConfiguration)
-        if (ldapExtendedEntryManagers == None):
+        if ldapExtendedEntryManagers is None:
             return False
 
         self.ldapExtendedEntryManagers = ldapExtendedEntryManagers
 
-        print "Basic (multi auth conf & lock account). Initialized successfully"
+        print("Basic (multi auth conf & lock account). Initialized successfully")
         return True
 
     def destroy(self, authConfiguration):
-        print "Basic (multi auth conf & lock account). Destroy"
+        print("Basic (multi auth conf & lock account). Destroy")
 
         result = True
         for ldapExtendedEntryManager in self.ldapExtendedEntryManagers:
@@ -75,9 +74,10 @@ class PersonAuthentication(PersonAuthenticationType):
 
             destoryResult = ldapEntryManager.destroy()
             result = result and destoryResult
-            print "Basic (multi auth conf & lock account). Destroyed: " + ldapConfiguration.getConfigId() + ". Result: " + str(destoryResult)
+            print("Basic (multi auth conf & lock account). Destroyed: "
+                  + ldapConfiguration.getConfigId() + ". Result: " + str(destoryResult))
 
-        print "Basic (multi auth conf & lock account). Destroyed successfully"
+        print("Basic (multi auth conf & lock account). Destroyed successfully")
 
         return result
 
@@ -92,14 +92,14 @@ class PersonAuthentication(PersonAuthenticationType):
 
     def authenticate(self, configurationAttributes, requestParameters, step):
         if (step == 1):
-            print "Basic (multi auth conf & lock account). Authenticate for step 1"
+            print("Basic (multi auth conf & lock account). Authenticate for step 1")
 
             credentials = Identity.instance().getCredentials()
             keyValue = credentials.getUsername()
             userPassword = credentials.getPassword()
 
             if not StringHelper.isNotEmptyString(keyValue) or not StringHelper.isNotEmptyString(userPassword):
-                print "Basic (multi auth conf & lock account). Missing fields "
+                print("Basic (multi auth conf & lock account). Missing fields ")
                 faces_messages = FacesMessages.instance()
                 faces_messages.clear()
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(True)
@@ -111,7 +111,7 @@ class PersonAuthentication(PersonAuthenticationType):
 
             user_status = self.getUserAttributeValue(keyValue, "gluuStatus")
             if user_status != None and user_status != "active":
-                print "Basic (multi auth conf & lock account). Account locked for user '%s'" % keyValue
+                print("Basic (multi auth conf & lock account). Account locked for user '%s'" % keyValue)
                 faces_messages = FacesMessages.instance()
                 faces_messages.clear()
                 FacesContext.getCurrentInstance().getExternalContext().getFlash().setKeepMessages(True)
@@ -133,7 +133,8 @@ class PersonAuthentication(PersonAuthenticationType):
                     loginAttributes = ldapExtendedEntryManager["loginAttributes"]
                     localLoginAttributes = ldapExtendedEntryManager["localLoginAttributes"]
 
-                    print "Basic (multi auth conf & lock account). Authenticate for step 1. Using configuration: " + ldapConfiguration.getConfigId()
+                    print("Basic (multi auth conf & lock account). Authenticate for step 1. Using configuration: "
+                          + ldapConfiguration.getConfigId())
 
                     idx = 0
                     count = len(loginAttributes)
@@ -174,8 +175,8 @@ class PersonAuthentication(PersonAuthenticationType):
             return False
 
     def prepareForStep(self, configurationAttributes, requestParameters, step):
-        if (step == 1):
-            print "Basic (multi auth conf & lock account). Prepare for Step 1"
+        if step == 1:
+            print("Basic (multi auth conf & lock account). Prepare for Step 1")
             return True
         else:
             return False
@@ -199,8 +200,8 @@ class PersonAuthentication(PersonAuthenticationType):
         f = open(authConfigurationFile, 'r')
         try:
             authConfiguration = json.loads(f.read())
-        except:
-            print "Basic (multi auth conf & lock account). Load auth configuration. Failed to load authentication configuration from file:", authConfigurationFile
+        except Exception:
+            print("Basic (multi auth conf & lock account). Load auth configuration. Failed to load authentication configuration from file:", authConfigurationFile)  # noqa
             return None
         finally:
             f.close()
@@ -208,53 +209,51 @@ class PersonAuthentication(PersonAuthenticationType):
         return authConfiguration
 
     def validateAuthConfiguration(self, authConfiguration):
-        isValid = True
-
         if (not ("ldap_configuration" in authConfiguration)):
-            print "Basic (multi auth conf & lock account). Validate auth configuration. There is no ldap_configuration section in configuration"
+            print("Basic (multi auth conf & lock account). Validate auth configuration. There is no ldap_configuration section in configuration")  # noqa
             return False
 
-            #@JsonPropertyOrder({ "configId", "bindDN", "bindPassword", "servers", "maxConnections", "useSSL", "baseDNs", "primaryKey",
-            #        "localPrimaryKey", "useAnonymousBind" })
+        # @JsonPropertyOrder({ "configId", "bindDN", "bindPassword", "servers", "maxConnections", "useSSL", "baseDNs", "primaryKey",
+        #        "localPrimaryKey", "useAnonymousBind" })
         idx = 1
         for ldapConfiguration in authConfiguration["ldap_configuration"]:
             if (not self.containsAttributeString(ldapConfiguration, "configId")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. There is no 'configId' attribute in ldap_configuration section #" + str(idx)
+                print("Basic (multi auth conf & lock account). Validate auth configuration. There is no 'configId' attribute in ldap_configuration section #" + str(idx))  # noqa
                 return False
 
             configId = ldapConfiguration["configId"]
 
             if (not self.containsAttributeArray(ldapConfiguration, "servers")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'servers' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'servers' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (self.containsAttributeString(ldapConfiguration, "bindDN")):
                 if (not self.containsAttributeString(ldapConfiguration, "bindPassword")):
-                    print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'bindPassword' in configuration '" + configId + "' is invalid"
+                    print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'bindPassword' in configuration '" + configId + "' is invalid")  # noqa
                     return False
 
             if (not self.containsAttributeString(ldapConfiguration, "useSSL")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'useSSL' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'useSSL' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (not self.containsAttributeString(ldapConfiguration, "maxConnections")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'maxConnections' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'maxConnections' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (not self.containsAttributeArray(ldapConfiguration, "baseDNs")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'baseDNs' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'baseDNs' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (not self.containsAttributeArray(ldapConfiguration, "loginAttributes")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'loginAttributes' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'loginAttributes' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (not self.containsAttributeArray(ldapConfiguration, "localLoginAttributes")):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. Property 'localLoginAttributes' in configuration '" + configId + "' is invalid"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. Property 'localLoginAttributes' in configuration '" + configId + "' is invalid")  # noqa
                 return False
 
             if (len(ldapConfiguration["loginAttributes"]) != len(ldapConfiguration["localLoginAttributes"])):
-                print "Basic (multi auth conf & lock account). Validate auth configuration. The number of attributes in 'loginAttributes' and 'localLoginAttributes' isn't equal in configuration '" + configId + "'"
+                print("Basic (multi auth conf & lock account). Validate auth configuration. The number of attributes in 'loginAttributes' and 'localLoginAttributes' isn't equal in configuration '" + configId + "'")  # noqa
                 return False
 
             idx += 1
@@ -271,8 +270,12 @@ class PersonAuthentication(PersonAuthenticationType):
         for ldapExtendedConfiguration in ldapExtendedConfigurations:
             ldapEntryManager = appInitializer.createLdapAuthEntryManager(
                 ldapExtendedConfiguration["ldapConfiguration"])
-            ldapExtendedEntryManagers.append({"ldapConfiguration": ldapExtendedConfiguration["ldapConfiguration"], "loginAttributes": ldapExtendedConfiguration[
-                                             "loginAttributes"], "localLoginAttributes": ldapExtendedConfiguration["localLoginAttributes"], "ldapEntryManager": ldapEntryManager})
+            ldapExtendedEntryManagers.append({
+                "ldapConfiguration": ldapExtendedConfiguration["ldapConfiguration"],
+                "loginAttributes": ldapExtendedConfiguration["loginAttributes"],
+                "localLoginAttributes": ldapExtendedConfiguration["localLoginAttributes"],
+                "ldapEntryManager": ldapEntryManager
+            })
 
         return ldapExtendedEntryManagers
 
@@ -302,8 +305,11 @@ class PersonAuthentication(PersonAuthenticationType):
                                                       maxConnections, useSSL, Arrays.asList(
                                                           baseDNs),
                                                       loginAttributes[0], localLoginAttributes[0], useAnonymousBind)
-            ldapExtendedConfigurations.append(
-                {"ldapConfiguration": ldapConfiguration, "loginAttributes": loginAttributes, "localLoginAttributes": localLoginAttributes})
+            ldapExtendedConfigurations.append({
+                "ldapConfiguration": ldapConfiguration,
+                "loginAttributes": loginAttributes,
+                "localLoginAttributes": localLoginAttributes
+            })
 
         return ldapExtendedConfigurations
 
@@ -320,17 +326,17 @@ class PersonAuthentication(PersonAuthenticationType):
         userService = UserService.instance()
 
         find_user_by_uid = userService.getUser(user_name, attribute_name)
-        if find_user_by_uid == None:
+        if find_user_by_uid is None:
             return None
 
         custom_attribute_value = userService.getCustomAttribute(
             find_user_by_uid, attribute_name)
-        if custom_attribute_value == None:
+        if custom_attribute_value is None:
             return None
 
         attribute_value = custom_attribute_value.getValue()
 
-        print "Basic (multi auth conf & lock account). Get user attribute. User's '%s' attribute '%s' value is '%s'" % (user_name, attribute_name, attribute_value)
+        print("Basic (multi auth conf & lock account). Get user attribute. User's '%s' attribute '%s' value is '%s'" % (user_name, attribute_name, attribute_value))  # noqa
 
         return attribute_value
 
@@ -341,14 +347,14 @@ class PersonAuthentication(PersonAuthenticationType):
         userService = UserService.instance()
 
         find_user_by_uid = userService.getUser(user_name)
-        if find_user_by_uid == None:
+        if find_user_by_uid is None:
             return None
 
         userService.setCustomAttribute(
             find_user_by_uid, attribute_name, attribute_value)
         updated_user = userService.updateUser(find_user_by_uid)
 
-        print "Basic (multi auth conf & lock account). Set user attribute. User's '%s' attribute '%s' value is '%s'" % (user_name, attribute_name, attribute_value)
+        print("Basic (multi auth conf & lock account). Set user attribute. User's '%s' attribute '%s' value is '%s'" % (user_name, attribute_name, attribute_value))  # noqa
 
         return updated_user
 
@@ -359,19 +365,19 @@ class PersonAuthentication(PersonAuthenticationType):
         userService = UserService.instance()
 
         find_user_by_uid = userService.getUser(user_name)
-        if (find_user_by_uid == None):
+        if (find_user_by_uid is None):
             return None
 
         status_attribute_value = userService.getCustomAttribute(
             find_user_by_uid, "gluuStatus")
-        if status_attribute_value != None:
+        if status_attribute_value is not None:
             user_status = status_attribute_value.getValue()
             if StringHelper.equals(user_status, "inactive"):
-                print "Basic (multi auth conf & lock account). Lock user. User '%s' locked already" % user_name
+                print("Basic (multi auth conf & lock account). Lock user. User '%s' locked already" % user_name)  # noqa
                 return
 
         userService.setCustomAttribute(
             find_user_by_uid, "gluuStatus", "inactive")
-        updated_user = userService.updateUser(find_user_by_uid)
+        userService.updateUser(find_user_by_uid)
 
-        print "Basic (multi auth conf & lock account). Lock user. User '%s' locked" % user_name
+        print("Basic (multi auth conf & lock account). Lock user. User '%s' locked" % user_name)  # noqa

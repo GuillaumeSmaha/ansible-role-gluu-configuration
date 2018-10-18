@@ -90,7 +90,7 @@ EXAMPLES = '''
             value: '3'
 '''
 
-from ansible.module_utils.basic import *
+from ansible.module_utils.basic import AnsibleModule
 import os
 import json
 import codecs

@@ -1,4 +1,3 @@
-
 - name: Update OpenID Connect - Scopes - Set default attributes
   set_fact:
     gluu_openid_connect_scopes_default:
@@ -29,4 +28,3 @@
   when: item.inum is not defined
   loop_control:
     label: "{{ item.displayName }}"
-

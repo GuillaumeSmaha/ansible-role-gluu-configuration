@@ -29,7 +29,6 @@ EXAMPLES = '''
 '''
 
 
-from ansible.module_utils.basic import *
 import re
 
 

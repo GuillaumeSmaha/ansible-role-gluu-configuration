@@ -82,7 +82,6 @@ gluu_object:
 '''
 
 from ansible import errors
-from ansible.module_utils.basic import *
 from ansible.module_utils.six import string_types
 
 
