@@ -42,7 +42,7 @@ Requirements
 
 In order to deploy, you will need:
 
-* Ansible in your deployer machine
+* Ansible 2.5.15 in your deployer machine. (Newer versions will cause an issue with python-ldap)(https://github.com/GuillaumeSmaha/ansible-role-gluu-configuration/issues/2))
 * You also need to install this python dependencies:
   - dpath
   - pyDes
