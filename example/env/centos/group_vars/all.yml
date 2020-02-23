@@ -126,7 +126,7 @@ gluu_scripts:
       - '{"value1":"invalid_login_count_attribute","value2":"oxCountInvalidLogin","description":""}'
       - '{"value1":"maximum_invalid_login_attemps","value2":"10","description":""}'
   -
-    displayName: uma_authorization_policy
+    displayName: uma_rpt_policy
     description: UMA Authorization Policy
     gluuStatus: 'true'
     oxConfigurationProperty:
