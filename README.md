@@ -84,7 +84,7 @@ vars:
 
   # Define a custom version of the package to install.
   # To get a list of available package versions visit: https://gluu.org/docs/ce/
-  gluu_version: 3.1.4
+  gluu_version: 3.1.7
 
 
   # Global parameters:
