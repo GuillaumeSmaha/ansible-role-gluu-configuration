@@ -301,28 +301,40 @@ vars:
   # gluu_scripts:
   #   -
   #     displayName: basic_lock
+  #     description: Basic Authentication with Lock
   #     gluuStatus: 'true'
   #     oxConfigurationProperty:
-  #       - '{"value1":"invalid_login_count_attribute","value2":"oxCountInvalidLogin","description":""}'
-  #       - '{"value1":"maximum_invalid_login_attemps","value2":"10","description":""}'
+  #       - value1: invalid_login_count_attribute
+  #         value2: oxCountInvalidLogin
+  #         description: ""
+  #       - value1: maximum_invalid_login_attemps
+  #         value2: 10
+  #         description: ""
   #   -
-  #     displayName: uma_authorization_policy
+  #     displayName: uma_rpt_policy
+  #     description: UMA Authorization Policy
   #     gluuStatus: 'true'
   #     oxConfigurationProperty:
-  #       - '{"value1":"allowed_clients","value2":"{{ gluu_inum_org }}!0008!2212.0010","description":""}'
+  #       - value1: allowed_clients
+  #         value2: "{{ gluu_inum_org }}!0008!2212.0010"
+  #         description: ""
   #   -
   #     inum: '2212.0010'
-  #     displayName: basic_multi_ldap_auth
-  #     description: Basic Multiple LDAP"Authentication
+  #     displayName: basic_multi_ldap_auth_lock
+  #     description: Basic Multiple LDAP Authentication with Lock
   #     gluuStatus: 'true'
   #     oxModuleProperty:
-  #       - '{"value1":"location_type","value2":"ldap","description":""}'
+  #       - value1: location_type
+  #         value2: ldap
+  #         description: ""
   #     oxConfigurationProperty:
-  #       - '{"value1":"auth_configuration_file","value2":"/etc/certs/basic_multi_ldap_auth.json","description":""}'
+  #       - value1: auth_configuration_file
+  #         value2: /etc/gluu/conf/basic_multi_ldap_auth.json
+  #         description: ""
   #     oxLevel: 100
   #     programmingLanguage: python
   #     oxScriptType: person_authentication
-  #     oxScript: "{{ lookup('template', 'templates/scripts/PersonAuthentication/BasicMultipleLdapAuth.py') }}"
+  #     oxScript: "{{ lookup('template', 'templates/scripts/PersonAuthentication/BasicMultipleLdapAuthWithLock.py') }}"
   #
   # If `inum` is not set, the attribute `displayName` will be used to search and update an existing entry.
   # _Note:_ The `inum` only need the value part of the inum value. The inum organization and type will be automaticly added.

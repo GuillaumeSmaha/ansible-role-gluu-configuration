@@ -99,7 +99,7 @@ class FilterModule(object):
             content = self.apply_operation(operation, content)
 
         if to_json:
-            # Avoid whitespace to avoid implicit conversion to dict by python
+            # Add whitespace to avoid implicit conversion to dict by python
             content = " " + json.dumps(content)
 
         return content
