@@ -74,6 +74,8 @@ If you want to update the role, you need to pass **--force** parameter when inst
 $ ansible-galaxy install --force GuillaumeSmaha.gluu-configuration
 ```
 
+See CHANGELOG.md
+
 
 Role Variables
 --------------
